@@ -1,21 +1,26 @@
 const db = require("../config/db");
 
-// Create a new post
+// Create Post
 const createPost = (req, res) => {
 
     const { content } = req.body;
 
-    if (!content) {
+    const userId = req.user.id;
+
+    const image = req.file ? req.file.filename : null;
+
+    if (!content && !image) {
         return res.status(400).json({
-            message: "Content is required"
+            message: "Post must contain text or image."
         });
     }
 
-    const userId = req.user.id;
+    const sql = `
+        INSERT INTO posts (user_id, content, image)
+        VALUES (?, ?, ?)
+    `;
 
-    const sql = "INSERT INTO posts(user_id, content) VALUES(?, ?)";
-
-    db.query(sql, [userId, content], (err) => {
+    db.query(sql, [userId, content || null, image], (err, result) => {
 
         if (err) {
             return res.status(500).json({
@@ -24,20 +29,22 @@ const createPost = (req, res) => {
         }
 
         res.status(201).json({
-            message: "Post Created Successfully"
+            message: "Post Created Successfully",
+            postId: result.insertId
         });
 
     });
 
 };
 
-// Get all posts
+// Get All Posts
 const getAllPosts = (req, res) => {
 
     const sql = `
         SELECT
             posts.id,
             posts.content,
+            posts.image,
             posts.created_at,
             users.username
         FROM posts
@@ -54,13 +61,63 @@ const getAllPosts = (req, res) => {
             });
         }
 
-        res.status(200).json(results);
+        const posts = results.map(post => ({
+            ...post,
+            image: post.image
+                ? `http://localhost:5000/uploads/${post.image}`
+                : null
+        }));
+
+        res.status(200).json(posts);
 
     });
 
 };
+// Get Single Post
+const getSinglePost = (req, res) => {
 
+    const postId = req.params.id;
+
+    const sql = `
+        SELECT
+            posts.id,
+            posts.content,
+            posts.image,
+            posts.created_at,
+            users.username
+        FROM posts
+        INNER JOIN users
+        ON posts.user_id = users.id
+        WHERE posts.id = ?
+    `;
+
+    db.query(sql, [postId], (err, results) => {
+
+        if (err) {
+            return res.status(500).json({
+                error: err.message
+            });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({
+                message: "Post not found"
+            });
+        }
+
+        const post = results[0];
+
+        if (post.image) {
+            post.image = `http://localhost:5000/uploads/${post.image}`;
+        }
+
+        res.status(200).json(post);
+
+    });
+
+};
 module.exports = {
     createPost,
-    getAllPosts
+    getAllPosts,
+    getSinglePost
 };
