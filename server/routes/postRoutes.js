@@ -8,16 +8,48 @@ const upload = require("../middleware/upload");
 const {
     createPost,
     getAllPosts,
-    getSinglePost
+    getSinglePost,
+    updatePost,
+    deletePost
 } = require("../controllers/postController");
 
-// Create Post
-router.post("/", verifyToken, upload.single("image"), createPost);
+// ================================
+// Create Post (Protected)
+// ================================
+router.post(
+    "/",
+    verifyToken,
+    upload.single("image"),
+    createPost
+);
 
-// Get All Posts
+// ================================
+// Get All Posts (Public)
+// ================================
 router.get("/", getAllPosts);
 
-// Get Single Post
+// ================================
+// Get Single Post (Public)
+// ================================
 router.get("/:id", getSinglePost);
+
+// ================================
+// Update Post (Protected)
+// ================================
+router.put(
+    "/:id",
+    verifyToken,
+    upload.single("image"),
+    updatePost
+);
+
+// ================================
+// Delete Post (Protected)
+// ================================
+router.delete(
+    "/:id",
+    verifyToken,
+    deletePost
+);
 
 module.exports = router;

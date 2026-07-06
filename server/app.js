@@ -6,8 +6,10 @@ require("dotenv").config();
 
 const authRoutes = require("./routes/authRoutes");
 const postRoutes = require("./routes/postRoutes");
+const userRoutes = require("./routes/userRoutes");
+const commentRoutes = require("./routes/commentRoutes");
+const likeRoutes = require("./routes/likeRoutes");
 const verifyToken = require("./middleware/auth");
-const upload = require("./middleware/upload");
 
 const app = express();
 
@@ -20,20 +22,9 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/posts", postRoutes);
-
-// Test upload route
-app.post("/test-upload", upload.single("image"), (req, res) => {
-
-    console.log("BODY:", req.body);
-    console.log("FILE:", req.file);
-
-    res.json({
-        message: "Upload Successful",
-        body: req.body,
-        file: req.file
-    });
-
-});
+app.use("/api/comments", commentRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/likes", likeRoutes);
 
 app.get("/", (req, res) => {
     res.send("🚀 InkSpace API is running");

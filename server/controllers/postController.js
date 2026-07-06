@@ -116,8 +116,131 @@ const getSinglePost = (req, res) => {
     });
 
 };
+// Update Post
+const updatePost = (req, res) => {
+
+    const postId = req.params.id;
+    const userId = req.user.id;
+    const { content } = req.body;
+
+    const image = req.file ? req.file.filename : null;
+
+    // Check if the post exists
+    db.query(
+        "SELECT * FROM posts WHERE id = ?",
+        [postId],
+        (err, results) => {
+
+            if (err) {
+                return res.status(500).json({
+                    error: err.message
+                });
+            }
+
+            if (results.length === 0) {
+                return res.status(404).json({
+                    message: "Post not found"
+                });
+            }
+
+            const post = results[0];
+
+            // Allow only the owner
+            if (post.user_id !== userId) {
+                return res.status(403).json({
+                    message: "Unauthorized"
+                });
+            }
+
+            const updatedContent =
+                content || post.content;
+
+            const updatedImage =
+                image || post.image;
+
+            db.query(
+                `UPDATE posts
+                 SET content = ?, image = ?
+                 WHERE id = ?`,
+                [updatedContent, updatedImage, postId],
+                (err) => {
+
+                    if (err) {
+                        return res.status(500).json({
+                            error: err.message
+                        });
+                    }
+
+                    res.json({
+                        message: "Post Updated Successfully"
+                    });
+
+                }
+            );
+
+        }
+    );
+
+};
+// Delete Post
+const deletePost = (req, res) => {
+
+    const postId = req.params.id;
+    const userId = req.user.id;
+
+    // Check whether the post exists
+    db.query(
+        "SELECT * FROM posts WHERE id = ?",
+        [postId],
+        (err, results) => {
+
+            if (err) {
+                return res.status(500).json({
+                    error: err.message
+                });
+            }
+
+            if (results.length === 0) {
+                return res.status(404).json({
+                    message: "Post not found"
+                });
+            }
+
+            const post = results[0];
+
+            // Allow only the owner
+            if (post.user_id !== userId) {
+                return res.status(403).json({
+                    message: "Unauthorized"
+                });
+            }
+
+            db.query(
+                "DELETE FROM posts WHERE id = ?",
+                [postId],
+                (err) => {
+
+                    if (err) {
+                        return res.status(500).json({
+                            error: err.message
+                        });
+                    }
+
+                    res.status(200).json({
+                        message: "Post Deleted Successfully"
+                    });
+
+                }
+            );
+
+        }
+    );
+
+};
 module.exports = {
     createPost,
     getAllPosts,
-    getSinglePost
+    getSinglePost,
+    updatePost,
+    deletePost
 };
