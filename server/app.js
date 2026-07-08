@@ -9,7 +9,9 @@ const postRoutes = require("./routes/postRoutes");
 const userRoutes = require("./routes/userRoutes");
 const commentRoutes = require("./routes/commentRoutes");
 const likeRoutes = require("./routes/likeRoutes");
+const followRoutes = require("./routes/followRoutes");
 const verifyToken = require("./middleware/auth");
+
 
 const app = express();
 
@@ -25,6 +27,7 @@ app.use("/api/posts", postRoutes);
 app.use("/api/comments", commentRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/likes", likeRoutes);
+app.use("/api/follows", followRoutes);
 
 app.get("/", (req, res) => {
     res.send("🚀 InkSpace API is running");
