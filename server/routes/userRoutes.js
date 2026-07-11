@@ -9,13 +9,22 @@ const {
     getMyProfile,
     updateMyProfile,
     getUserProfile,
-    getUserPosts
+    getUserPosts,
+    searchUsers
 } = require("../controllers/userController");
 
-// My Profile
-router.get("/profile", verifyToken, getMyProfile);
+// ================================
+// Get Logged-in User Profile
+// ================================
+router.get(
+    "/profile",
+    verifyToken,
+    getMyProfile
+);
 
-// Update My Profile
+// ================================
+// Update Logged-in User Profile
+// ================================
 router.put(
     "/profile",
     verifyToken,
@@ -23,10 +32,30 @@ router.put(
     updateMyProfile
 );
 
-// Another User Profile
-router.get("/:id", getUserProfile);
+// ================================
+// Search Users
+// Example:
+// /api/users/search?username=ak
+// ================================
+router.get(
+    "/search",
+    searchUsers
+);
 
-// Another User Posts
-router.get("/:id/posts", getUserPosts);
+// ================================
+// Get Another User's Posts
+// ================================
+router.get(
+    "/:id/posts",
+    getUserPosts
+);
+
+// ================================
+// Get Another User's Profile
+// ================================
+router.get(
+    "/:id",
+    getUserProfile
+);
 
 module.exports = router;

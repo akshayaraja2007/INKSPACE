@@ -237,10 +237,88 @@ const deletePost = (req, res) => {
     );
 
 };
+// Home Feed
+// Home Feed
+const getHomeFeed = (req, res) => {
+
+    const userId = req.user.id;
+
+    const sql = `
+        SELECT
+            posts.id,
+            posts.content,
+            posts.image,
+            posts.created_at,
+
+            users.id AS user_id,
+            users.username,
+            users.profile_picture,
+
+            COUNT(DISTINCT l1.id) AS likes,
+            COUNT(DISTINCT comments.id) AS comments,
+
+            CASE
+                WHEN MAX(l2.id) IS NULL THEN FALSE
+                ELSE TRUE
+            END AS liked
+
+        FROM follows
+
+        INNER JOIN posts
+            ON follows.following_id = posts.user_id
+
+        INNER JOIN users
+            ON posts.user_id = users.id
+
+        LEFT JOIN likes l1
+            ON posts.id = l1.post_id
+
+        LEFT JOIN comments
+            ON posts.id = comments.post_id
+
+        LEFT JOIN likes l2
+            ON posts.id = l2.post_id
+            AND l2.user_id = ?
+
+        WHERE follows.follower_id = ?
+
+        GROUP BY posts.id
+
+        ORDER BY posts.created_at DESC
+    `;
+
+    db.query(sql, [userId, userId], (err, results) => {
+
+        if (err) {
+            return res.status(500).json({
+                error: err.message
+            });
+        }
+
+        const feed = results.map(post => ({
+            ...post,
+
+            liked: Boolean(post.liked),
+
+            image: post.image
+                ? `http://localhost:5000/uploads/${post.image}`
+                : null,
+
+            profile_picture: post.profile_picture
+                ? `http://localhost:5000/uploads/${post.profile_picture}`
+                : null
+        }));
+
+        res.status(200).json(feed);
+
+    });
+
+};
 module.exports = {
     createPost,
     getAllPosts,
     getSinglePost,
     updatePost,
-    deletePost
+    deletePost,
+    getHomeFeed
 };

@@ -8,14 +8,15 @@ const upload = require("../middleware/upload");
 const {
     createPost,
     getAllPosts,
+    getHomeFeed,
     getSinglePost,
     updatePost,
     deletePost
 } = require("../controllers/postController");
 
-// ================================
+// ======================================
 // Create Post (Protected)
-// ================================
+// ======================================
 router.post(
     "/",
     verifyToken,
@@ -23,19 +24,35 @@ router.post(
     createPost
 );
 
-// ================================
-// Get All Posts (Public)
-// ================================
-router.get("/", getAllPosts);
+// ======================================
+// Home Feed (Protected)
+// Shows posts only from followed users
+// ======================================
+router.get(
+    "/feed",
+    verifyToken,
+    getHomeFeed
+);
+// ======================================
+// Explore (Public)
+// Shows all posts
+// ======================================
+router.get(
+    "/",
+    getAllPosts
+);
 
-// ================================
+// ======================================
 // Get Single Post (Public)
-// ================================
-router.get("/:id", getSinglePost);
+// ======================================
+router.get(
+    "/:id",
+    getSinglePost
+);
 
-// ================================
+// ======================================
 // Update Post (Protected)
-// ================================
+// ======================================
 router.put(
     "/:id",
     verifyToken,
@@ -43,9 +60,9 @@ router.put(
     updatePost
 );
 
-// ================================
+// ======================================
 // Delete Post (Protected)
-// ================================
+// ======================================
 router.delete(
     "/:id",
     verifyToken,

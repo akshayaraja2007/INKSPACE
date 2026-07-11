@@ -195,10 +195,53 @@ const getUserPosts = (req, res) => {
     });
 
 };
+// Search Users
+const searchUsers = (req, res) => {
+
+    const username = req.query.username;
+
+    if (!username) {
+        return res.status(400).json({
+            message: "Username query is required"
+        });
+    }
+
+    const sql = `
+        SELECT
+            id,
+            username,
+            bio,
+            profile_picture
+        FROM users
+        WHERE username LIKE ?
+        ORDER BY username ASC
+    `;
+
+    db.query(sql, [`%${username}%`], (err, results) => {
+
+        if (err) {
+            return res.status(500).json({
+                error: err.message
+            });
+        }
+
+        const users = results.map(user => ({
+            ...user,
+            profile_picture: user.profile_picture
+                ? `http://localhost:5000/uploads/${user.profile_picture}`
+                : null
+        }));
+
+        res.status(200).json(users);
+
+    });
+
+};
 
 module.exports = {
     getMyProfile,
     updateMyProfile,
     getUserProfile,
-    getUserPosts
+    getUserPosts,
+    searchUsers
 };
