@@ -9,7 +9,7 @@ import Profile from "./pages/Profile";
 import EditProfile from "./pages/EditProfile";
 import Notifications from "./pages/Notifications";
 import CreatePost from "./pages/CreatePost";
-
+import UserProfile from "./pages/UserProfile";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
@@ -17,10 +17,16 @@ function App() {
         <Routes>
 
             {/* Public Routes */}
+
             <Route path="/" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+
+            <Route
+                path="/register"
+                element={<Register />}
+            />
 
             {/* Protected Routes */}
+
             <Route
                 path="/home"
                 element={
@@ -83,6 +89,14 @@ function App() {
                     </ProtectedRoute>
                 }
             />
+<Route
+    path="/user/:id"
+    element={
+        <ProtectedRoute>
+            <UserProfile />
+        </ProtectedRoute>
+    }
+/>
 
         </Routes>
     );

@@ -8,6 +8,7 @@ const upload = require("../middleware/upload");
 const {
     createPost,
     getAllPosts,
+    getExplorePosts,
     getHomeFeed,
     getSinglePost,
     updatePost,
@@ -37,6 +38,10 @@ router.get(
 // Explore (Public)
 // Shows all posts
 // ======================================
+router.get(
+    "/explore",
+    getExplorePosts
+);
 router.get(
     "/",
     getAllPosts

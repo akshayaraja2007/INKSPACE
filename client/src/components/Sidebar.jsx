@@ -1,6 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
-
 import {
     FaHome,
     FaCompass,
@@ -13,51 +12,26 @@ import {
 function Sidebar() {
 
     const location = useLocation();
-
-    const { theme } = useTheme();   // ✅ Move here
+    const { theme } = useTheme();
 
     const menu = [
-        {
-            name: "Home",
-            path: "/home",
-            icon: <FaHome />
-        },
-        {
-            name: "Explore",
-            path: "/explore",
-            icon: <FaCompass />
-        },
-        {
-            name: "Search",
-            path: "/search",
-            icon: <FaSearch />
-        },
-        {
-            name: "Create Post",
-            path: "/create-post",
-            icon: <FaPlusCircle />
-        },
-        {
-            name: "Notifications",
-            path: "/notifications",
-            icon: <FaBell />
-        },
-        {
-            name: "Profile",
-            path: "/profile",
-            icon: <FaUser />
-        }
+        { name: "Home", path: "/home", icon: <FaHome /> },
+        { name: "Explore", path: "/explore", icon: <FaCompass /> },
+        { name: "Search", path: "/search", icon: <FaSearch /> },
+        { name: "Create Post", path: "/create-post", icon: <FaPlusCircle /> },
+        { name: "Notifications", path: "/notifications", icon: <FaBell /> },
+        { name: "Profile", path: "/profile", icon: <FaUser /> }
     ];
 
     return (
-        <aside
-            className={`hidden md:block w-60 h-screen p-6 shadow-lg ${
-                theme === "dark"
-                    ? "bg-gray-800"
-                    : "bg-white"
-            }`}
-        >
-            <ul className="space-y-3">
+  <aside
+    className={`hidden md:block w-60 sticky top-16 h-[calc(100vh-64px)] overflow-y-auto shadow-lg ${
+        theme === "dark"
+            ? "bg-gray-800"
+            : "bg-white"
+    }`}
+>
+            <ul className="space-y-3 p-6">
 
                 {menu.map((item) => (
 
@@ -65,7 +39,7 @@ function Sidebar() {
 
                         <Link
                             to={item.path}
-                            className={`flex items-center gap-4 px-4 py-3 rounded-xl transition duration-200 ${
+                            className={`flex items-center gap-4 px-4 py-3 rounded-xl transition ${
                                 location.pathname === item.path
                                     ? "bg-blue-600 text-white"
                                     : theme === "dark"
@@ -82,9 +56,9 @@ function Sidebar() {
                 ))}
 
             </ul>
-
         </aside>
     );
+
 }
 
 export default Sidebar;

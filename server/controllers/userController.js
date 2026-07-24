@@ -1,20 +1,39 @@
 const db = require("../config/db");
 
+// ================================
 // Get Logged-in User Profile
+// ================================
 const getMyProfile = (req, res) => {
 
     const userId = req.user.id;
 
     const sql = `
         SELECT
-            id,
-            username,
-            email,
-            bio,
-            profile_picture,
-            created_at
+            users.id,
+            users.username,
+            users.email,
+            users.bio,
+            users.profile_picture,
+            users.created_at,
+
+            COUNT(DISTINCT posts.id) AS posts,
+            COUNT(DISTINCT f1.id) AS followers,
+            COUNT(DISTINCT f2.id) AS following
+
         FROM users
-        WHERE id = ?
+
+        LEFT JOIN posts
+            ON users.id = posts.user_id
+
+        LEFT JOIN follows f1
+            ON users.id = f1.following_id
+
+        LEFT JOIN follows f2
+            ON users.id = f2.follower_id
+
+        WHERE users.id = ?
+
+        GROUP BY users.id
     `;
 
     db.query(sql, [userId], (err, results) => {
@@ -38,12 +57,15 @@ const getMyProfile = (req, res) => {
                 `http://localhost:5000/uploads/${user.profile_picture}`;
         }
 
-        res.json(user);
+        res.status(200).json(user);
 
     });
 
 };
+
+// ================================
 // Update Logged-in User Profile
+// ================================
 const updateMyProfile = (req, res) => {
 
     const userId = req.user.id;
@@ -117,20 +139,40 @@ const updateMyProfile = (req, res) => {
     );
 
 };
+
+// ================================
 // Get Another User Profile
+// ================================
 const getUserProfile = (req, res) => {
 
     const userId = req.params.id;
 
     const sql = `
         SELECT
-            id,
-            username,
-            bio,
-            profile_picture,
-            created_at
+            users.id,
+            users.username,
+            users.bio,
+            users.profile_picture,
+            users.created_at,
+
+            COUNT(DISTINCT posts.id) AS posts,
+            COUNT(DISTINCT f1.id) AS followers,
+            COUNT(DISTINCT f2.id) AS following
+
         FROM users
-        WHERE id = ?
+
+        LEFT JOIN posts
+            ON users.id = posts.user_id
+
+        LEFT JOIN follows f1
+            ON users.id = f1.following_id
+
+        LEFT JOIN follows f2
+            ON users.id = f2.follower_id
+
+        WHERE users.id = ?
+
+        GROUP BY users.id
     `;
 
     db.query(sql, [userId], (err, results) => {
@@ -154,12 +196,15 @@ const getUserProfile = (req, res) => {
                 `http://localhost:5000/uploads/${user.profile_picture}`;
         }
 
-        res.json(user);
+        res.status(200).json(user);
 
     });
 
 };
+
+// ================================
 // Get All Posts of a User
+// ================================
 const getUserPosts = (req, res) => {
 
     const userId = req.params.id;
@@ -190,12 +235,15 @@ const getUserPosts = (req, res) => {
                 : null
         }));
 
-        res.json(posts);
+        res.status(200).json(posts);
 
     });
 
 };
+
+// ================================
 // Search Users
+// ================================
 const searchUsers = (req, res) => {
 
     const username = req.query.username;

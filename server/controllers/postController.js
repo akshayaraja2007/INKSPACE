@@ -237,6 +237,65 @@ const deletePost = (req, res) => {
     );
 
 };
+// Explore Feed
+const getExplorePosts = (req, res) => {
+
+    const sql = `
+        SELECT
+            posts.id,
+            posts.content,
+            posts.image,
+            posts.created_at,
+
+            users.id AS user_id,
+            users.username,
+            users.profile_picture,
+
+            COUNT(DISTINCT likes.id) AS likes,
+            COUNT(DISTINCT comments.id) AS comments
+
+        FROM posts
+
+        INNER JOIN users
+            ON posts.user_id = users.id
+
+        LEFT JOIN likes
+            ON posts.id = likes.post_id
+
+        LEFT JOIN comments
+            ON posts.id = comments.post_id
+
+        GROUP BY posts.id
+
+        ORDER BY posts.created_at DESC
+    `;
+
+    db.query(sql, (err, results) => {
+
+        if (err) {
+            return res.status(500).json({
+                error: err.message
+            });
+        }
+
+        const posts = results.map(post => ({
+            ...post,
+
+            image: post.image
+                ? `http://localhost:5000/uploads/${post.image}`
+                : null,
+
+            profile_picture: post.profile_picture
+                ? `http://localhost:5000/uploads/${post.profile_picture}`
+                : null
+        }));
+
+        res.status(200).json(posts);
+
+    });
+
+};
+// Home Feed
 // Home Feed
 // Home Feed
 const getHomeFeed = (req, res) => {
@@ -262,13 +321,14 @@ const getHomeFeed = (req, res) => {
                 ELSE TRUE
             END AS liked
 
-        FROM follows
-
-        INNER JOIN posts
-            ON follows.following_id = posts.user_id
+        FROM posts
 
         INNER JOIN users
             ON posts.user_id = users.id
+
+        LEFT JOIN follows
+            ON follows.following_id = posts.user_id
+            AND follows.follower_id = ?
 
         LEFT JOIN likes l1
             ON posts.id = l1.post_id
@@ -280,14 +340,16 @@ const getHomeFeed = (req, res) => {
             ON posts.id = l2.post_id
             AND l2.user_id = ?
 
-        WHERE follows.follower_id = ?
+        WHERE
+            posts.user_id = ?
+            OR follows.follower_id IS NOT NULL
 
         GROUP BY posts.id
 
         ORDER BY posts.created_at DESC
     `;
 
-    db.query(sql, [userId, userId], (err, results) => {
+    db.query(sql, [userId, userId, userId], (err, results) => {
 
         if (err) {
             return res.status(500).json({
@@ -317,6 +379,7 @@ const getHomeFeed = (req, res) => {
 module.exports = {
     createPost,
     getAllPosts,
+    getExplorePosts,
     getSinglePost,
     updatePost,
     deletePost,

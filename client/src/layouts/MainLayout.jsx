@@ -1,40 +1,41 @@
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
-import { useTheme } from "../context/ThemeContext";
 import MobileBottomNav from "../components/MobileBottomNav";
+import { useTheme } from "../context/ThemeContext";
+
 function MainLayout({ children }) {
 
     const { theme } = useTheme();
 
- return (
+    return (
 
-    <div
-        className={
-            theme === "dark"
-                ? "bg-gray-900 text-white min-h-screen"
-                : "bg-gray-100 text-black min-h-screen"
-        }
-    >
+        <div
+            className={`min-h-screen ${
+                theme === "dark"
+                    ? "bg-gray-900 text-white"
+                    : "bg-gray-100 text-black"
+            }`}
+        >
 
-        <Navbar />
+            <Navbar />
 
-        <div className="flex">
+            <div className="flex">
 
-            <Sidebar />
+                <Sidebar />
 
-            <main className="flex-1 p-4 md:p-6 pb-24 md:pb-6">
+                <main className="flex-1 p-6 pb-24 md:pb-6">
 
-                {children}
+                    {children}
 
-            </main>
+                </main>
+
+            </div>
+
+            <MobileBottomNav />
 
         </div>
 
-        <MobileBottomNav />
-
-    </div>
-
-);
+    );
 
 }
 

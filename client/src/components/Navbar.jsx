@@ -1,39 +1,31 @@
 import { useNavigate } from "react-router-dom";
-
 import {
     FaMoon,
     FaSun,
     FaUserCircle,
-    FaSignOutAlt
+    FaSignOutAlt,
+    FaPlus
 } from "react-icons/fa";
-
 import { useTheme } from "../context/ThemeContext";
 
 function Navbar() {
-
     const { theme, toggleTheme } = useTheme();
-
     const navigate = useNavigate();
 
     const logout = () => {
-
         localStorage.removeItem("token");
-
         navigate("/");
-
     };
 
     return (
-
         <nav
-            className={
+            className={`sticky top-0 z-50 shadow-lg ${
                 theme === "dark"
-                    ? "bg-gray-800 text-white shadow-lg"
-                    : "bg-white text-black shadow-lg"
-            }
+                    ? "bg-gray-800 text-white"
+                    : "bg-white text-black"
+            }`}
         >
-
-            <div className="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
+            <div className="max-w-7xl mx-auto h-16 flex items-center justify-between px-6">
 
                 <h1
                     className="text-3xl font-bold text-blue-600 cursor-pointer"
@@ -42,17 +34,23 @@ function Navbar() {
                     InkSpace
                 </h1>
 
-                <div className="flex items-center gap-5">
+                <div className="flex items-center gap-4">
+
+                    <button
+                        onClick={() => navigate("/create-post")}
+                        className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition"
+                    >
+                        <FaPlus />
+                        <span className="hidden md:inline">
+                            Create Post
+                        </span>
+                    </button>
 
                     <button
                         onClick={toggleTheme}
                         className="text-xl hover:scale-110 transition"
                     >
-                        {
-                            theme === "dark"
-                                ? <FaSun />
-                                : <FaMoon />
-                        }
+                        {theme === "dark" ? <FaSun /> : <FaMoon />}
                     </button>
 
                     <button
@@ -64,7 +62,7 @@ function Navbar() {
 
                     <button
                         onClick={logout}
-                        className="text-red-500 text-xl hover:scale-110 transition"
+                        className="text-xl text-red-500 hover:scale-110 transition"
                     >
                         <FaSignOutAlt />
                     </button>
@@ -72,11 +70,8 @@ function Navbar() {
                 </div>
 
             </div>
-
         </nav>
-
     );
-
 }
 
 export default Navbar;
