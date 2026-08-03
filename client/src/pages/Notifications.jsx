@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import { useTheme } from "../context/ThemeContext";
 import "./Notifications.css";
-
+import MainLayout from "../layouts/MainLayout";
 function Notifications() {
   const { theme } = useTheme();
   const navigate = useNavigate();
@@ -90,7 +90,7 @@ function Notifications() {
     );
   }
 
-  return(
+  return(<MainLayout>
     <div className={`notifications-page ${theme}`}>
       <div className="notifications-header">
         <h1>Notifications</h1>
@@ -153,6 +153,7 @@ function Notifications() {
         </div>
       )}
     </div>
+    </MainLayout>
   );
 }
 

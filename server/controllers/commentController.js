@@ -1,6 +1,9 @@
 const db = require("../config/db");
+const { createNotification } = require("./notificationController");
 
+// ==========================================
 // Create Comment
+// ==========================================
 const createComment = (req, res) => {
 
     const userId = req.user.id;
@@ -26,15 +29,39 @@ const createComment = (req, res) => {
             });
         }
 
-        res.status(201).json({
-            message: "Comment Added Successfully",
-            commentId: result.insertId
-        });
+        // Find the owner of the post
+        db.query(
+            "SELECT user_id FROM posts WHERE id = ?",
+            [postId],
+            (err, results) => {
+
+                if (!err && results.length > 0) {
+
+                    createNotification(
+                        userId,
+                        results[0].user_id,
+                        postId,
+                        "comment",
+                        "commented on your post."
+                    );
+
+                }
+
+                res.status(201).json({
+                    message: "Comment Added Successfully",
+                    commentId: result.insertId
+                });
+
+            }
+        );
 
     });
 
 };
-// Get Comments of a Post
+
+// ==========================================
+// Get Comments
+// ==========================================
 const getComments = (req, res) => {
 
     const postId = req.params.postId;
@@ -65,7 +92,10 @@ const getComments = (req, res) => {
     });
 
 };
+
+// ==========================================
 // Update Comment
+// ==========================================
 const updateComment = (req, res) => {
 
     const commentId = req.params.id;
@@ -95,9 +125,7 @@ const updateComment = (req, res) => {
                 });
             }
 
-            const existingComment = results[0];
-
-            if (existingComment.user_id !== userId) {
+            if (results[0].user_id !== userId) {
                 return res.status(403).json({
                     message: "Unauthorized"
                 });
@@ -125,7 +153,10 @@ const updateComment = (req, res) => {
     );
 
 };
+
+// ==========================================
 // Delete Comment
+// ==========================================
 const deleteComment = (req, res) => {
 
     const commentId = req.params.id;
@@ -148,9 +179,7 @@ const deleteComment = (req, res) => {
                 });
             }
 
-            const existingComment = results[0];
-
-            if (existingComment.user_id !== userId) {
+            if (results[0].user_id !== userId) {
                 return res.status(403).json({
                     message: "Unauthorized"
                 });

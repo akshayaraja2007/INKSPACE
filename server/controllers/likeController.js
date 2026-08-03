@@ -1,12 +1,15 @@
 const db = require("../config/db");
+const { createNotification } = require("./notificationController");
 
+// ==========================================
 // Like a Post
+// ==========================================
 const likePost = (req, res) => {
 
     const userId = req.user.id;
     const postId = req.params.postId;
 
-    // Check whether user already liked this post
+    // Check whether already liked
     db.query(
         "SELECT * FROM likes WHERE user_id = ? AND post_id = ?",
         [userId, postId],
@@ -24,6 +27,7 @@ const likePost = (req, res) => {
                 });
             }
 
+            // Insert Like
             db.query(
                 "INSERT INTO likes(user_id, post_id) VALUES(?, ?)",
                 [userId, postId],
@@ -35,9 +39,30 @@ const likePost = (req, res) => {
                         });
                     }
 
-                    res.status(201).json({
-                        message: "Post Liked Successfully"
-                    });
+                    // Find post owner
+                    db.query(
+                        "SELECT user_id FROM posts WHERE id = ?",
+                        [postId],
+                        (err, results) => {
+
+                            if (!err && results.length > 0) {
+
+                                createNotification(
+                                    userId,
+                                    results[0].user_id,
+                                    postId,
+                                    "like",
+                                    "liked your post."
+                                );
+
+                            }
+
+                            res.status(201).json({
+                                message: "Post Liked Successfully"
+                            });
+
+                        }
+                    );
 
                 }
             );
@@ -47,7 +72,9 @@ const likePost = (req, res) => {
 
 };
 
+// ==========================================
 // Unlike a Post
+// ==========================================
 const unlikePost = (req, res) => {
 
     const userId = req.user.id;
@@ -73,7 +100,9 @@ const unlikePost = (req, res) => {
 
 };
 
+// ==========================================
 // Get Like Count
+// ==========================================
 const getLikeCount = (req, res) => {
 
     const postId = req.params.postId;
@@ -96,7 +125,9 @@ const getLikeCount = (req, res) => {
 
 };
 
+// ==========================================
 // Check Like Status
+// ==========================================
 const getLikeStatus = (req, res) => {
 
     const userId = req.user.id;

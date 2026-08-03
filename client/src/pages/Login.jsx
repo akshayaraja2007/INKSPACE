@@ -31,6 +31,11 @@ function Login() {
 
             localStorage.setItem("token", res.data.token);
 
+            localStorage.setItem(
+                "user",
+                JSON.stringify(res.data.user)
+            );
+
             navigate("/home");
 
         } catch (err) {
@@ -100,7 +105,7 @@ function Login() {
                                 setShowPassword(!showPassword)
                             }
                         >
-                           {showPassword ? <FaEyeSlash /> : <FaEye />}
+                            {showPassword ? <FaEyeSlash /> : <FaEye />}
                         </button>
 
                     </div>

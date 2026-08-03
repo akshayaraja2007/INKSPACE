@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import { useTheme } from "../context/ThemeContext";
 import "./Explore.css";
-
+import MainLayout from "../layouts/MainLayout";
 function Explore() {
   const { theme } = useTheme();
   const navigate = useNavigate();
@@ -36,7 +36,7 @@ function Explore() {
     );
   }
 
-  return (
+  return (<MainLayout>
     <div className={`explore-page ${theme}`}>
       <div className="explore-header">
         <h1>Explore</h1>
@@ -101,6 +101,7 @@ function Explore() {
         </div>
       )}
     </div>
+    </MainLayout>
   );
 }
 

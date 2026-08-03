@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import { useTheme } from "../context/ThemeContext";
 import "./Search.css";
-
+import MainLayout from "../layouts/MainLayout";
 function Search() {
   const { theme } = useTheme();
   const navigate = useNavigate();
@@ -37,7 +37,7 @@ function Search() {
     }
   }
 
-  return (
+  return (<MainLayout>
     <div className={`search-page ${theme}`}>
       <div className="search-container">
         <h2>Search Users</h2>
@@ -91,6 +91,7 @@ function Search() {
         </div>
       </div>
     </div>
+    </MainLayout>
   );
 }
 

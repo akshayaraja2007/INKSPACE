@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
+import PostCard from "../components/PostCard";
 import { useTheme } from "../context/ThemeContext";
 import "./Profile.css";
-
+import MainLayout from "../layouts/MainLayout";
 function Profile() {
     const navigate = useNavigate();
     const { theme } = useTheme();
@@ -55,6 +56,7 @@ function Profile() {
     }
 
     return (
+         <MainLayout>
         <div className={`profile-page ${theme}`}>
 
             <div className="profile-card">
@@ -65,7 +67,7 @@ function Profile() {
                         src={
                             profile.profile_picture ||
                             "https://ui-avatars.com/api/?name=" +
-                                profile.username
+                            profile.username
                         }
                         alt="Profile"
                         className="profile-image"
@@ -139,40 +141,23 @@ function Profile() {
 
                         {posts.map((post) => (
 
-                            <div
-                                className="post-card"
+                            <PostCard
                                 key={post.id}
-                            >
-
-                                {post.image ? (
-
-                                    <img
-                                        src={post.image}
-                                        alt=""
-                                        className="post-image"
-                                    />
-
-                                ) : (
-
-                                    <div className="text-post">
-                                        {post.content}
-                                    </div>
-
-                                )}
-
-                                <div className="post-footer">
-
-                                    <p>{post.content}</p>
-
-                                    <small>
-                                        {new Date(
-                                            post.created_at
-                                        ).toLocaleString()}
-                                    </small>
-
-                                </div>
-
-                            </div>
+                                post={{
+                                    ...post,
+                                    user_id: profile.id,
+                                    username: profile.username,
+                                    profile_picture: profile.profile_picture,
+                                    likes: post.likes || 0,
+                                    comments: post.comments || 0,
+                                    liked: false
+                                }}
+                                onDelete={(postId) =>
+                                    setPosts((prev) =>
+                                        prev.filter((p) => p.id !== postId)
+                                    )
+                                }
+                            />
 
                         ))}
 
@@ -183,6 +168,7 @@ function Profile() {
             </div>
 
         </div>
+        </MainLayout>
     );
 }
 

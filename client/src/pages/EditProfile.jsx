@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import { useTheme } from "../context/ThemeContext";
 import "./EditProfile.css";
-
+import MainLayout from "../layouts/MainLayout";
 function EditProfile() {
 
     const navigate = useNavigate();
@@ -108,7 +108,7 @@ function EditProfile() {
     };
 
     return (
-
+<MainLayout>
         <div className={`edit-profile-page ${theme}`}>
 
             <form
@@ -173,7 +173,7 @@ function EditProfile() {
             </form>
 
         </div>
-
+</MainLayout>
     );
 
 }

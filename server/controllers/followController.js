@@ -1,5 +1,5 @@
 const db = require("../config/db");
-
+const { createNotification } = require("./notificationController");
 // Follow User
 const followUser = (req, res) => {
 
@@ -31,23 +31,31 @@ const followUser = (req, res) => {
                 });
             }
 
-            db.query(
-                "INSERT INTO follows(follower_id, following_id) VALUES(?, ?)",
-                [followerId, followingId],
-                (err) => {
+     db.query(
+    "INSERT INTO follows(follower_id, following_id) VALUES(?, ?)",
+    [followerId, followingId],
+    (err) => {
 
-                    if (err) {
-                        return res.status(500).json({
-                            error: err.message
-                        });
-                    }
+        if (err) {
+            return res.status(500).json({
+                error: err.message
+            });
+        }
 
-                    res.status(201).json({
-                        message: "User Followed Successfully"
-                    });
+        createNotification(
+            followerId,
+            followingId,
+            null,
+            "follow",
+            "started following you."
+        );
 
-                }
-            );
+        res.status(201).json({
+            message: "User Followed Successfully"
+        });
+
+    }
+);
 
         }
     );

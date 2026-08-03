@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { FaImage, FaTimes } from "react-icons/fa";
 import api from "../api/axios";
 import { useTheme } from "../context/ThemeContext";
-
+import MainLayout from "../layouts/MainLayout";
 function CreatePost() {
     const { theme } = useTheme();
     const navigate = useNavigate();
@@ -76,7 +76,7 @@ function CreatePost() {
         }
     };
 
-    return (
+    return (<MainLayout>
         <div
             className={`max-w-2xl mx-auto mt-8 rounded-2xl shadow-lg p-6 ${
                 theme === "dark"
@@ -155,6 +155,7 @@ function CreatePost() {
                 </button>
             </form>
         </div>
+        </MainLayout>
     );
 }
 
