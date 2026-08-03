@@ -1,5 +1,5 @@
 const db = require("../config/db");
-
+const BASE_URL = process.env.BASE_URL;
 // ==========================================
 // Get Logged-in User Notifications
 // ==========================================
@@ -44,7 +44,7 @@ const getNotifications = (req, res) => {
             ...notification,
 
             profile_picture: notification.profile_picture
-                ? `http://localhost:5000/uploads/${notification.profile_picture}`
+                ? `${BASE_URL}/uploads/${notification.profile_picture}`
                 : null
 
         }));

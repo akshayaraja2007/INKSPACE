@@ -76,7 +76,8 @@ function CreatePost() {
         }
     };
 
-    return (<MainLayout>
+    return (
+    <MainLayout>
         <div
             className={`max-w-2xl mx-auto mt-8 rounded-2xl shadow-lg p-6 ${
                 theme === "dark"

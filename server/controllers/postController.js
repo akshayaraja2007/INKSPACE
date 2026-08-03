@@ -1,5 +1,5 @@
 const db = require("../config/db");
-
+const BASE_URL = process.env.BASE_URL;
 // Create Post
 const createPost = (req, res) => {
 
@@ -64,7 +64,7 @@ const getAllPosts = (req, res) => {
         const posts = results.map(post => ({
             ...post,
             image: post.image
-                ? `http://localhost:5000/uploads/${post.image}`
+                ? `${BASE_URL}/uploads/${post.image}`
                 : null
         }));
 
@@ -108,7 +108,7 @@ const getSinglePost = (req, res) => {
         const post = results[0];
 
         if (post.image) {
-            post.image = `http://localhost:5000/uploads/${post.image}`;
+            post.image = `${BASE_URL}/uploads/${post.image}`;
         }
 
         res.status(200).json(post);
@@ -282,11 +282,11 @@ const getExplorePosts = (req, res) => {
             ...post,
 
             image: post.image
-                ? `http://localhost:5000/uploads/${post.image}`
+                ? `${BASE_URL}/uploads/${post.image}`
                 : null,
 
             profile_picture: post.profile_picture
-                ? `http://localhost:5000/uploads/${post.profile_picture}`
+                ? `${BASE_URL}/uploads/${post.profile_picture}`
                 : null
         }));
 
@@ -363,11 +363,11 @@ const getHomeFeed = (req, res) => {
             liked: Boolean(post.liked),
 
             image: post.image
-                ? `http://localhost:5000/uploads/${post.image}`
+                ? `${BASE_URL}/uploads/${post.image}`
                 : null,
 
             profile_picture: post.profile_picture
-                ? `http://localhost:5000/uploads/${post.profile_picture}`
+                ? `${BASE_URL}/uploads/${post.profile_picture}`
                 : null
         }));
 

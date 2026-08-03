@@ -1,4 +1,5 @@
 const db = require("../config/db");
+const BASE_URL = process.env.BASE_URL;
 const { createNotification } = require("./notificationController");
 // Follow User
 const followUser = (req, res) => {
@@ -121,7 +122,7 @@ const getFollowers = (req, res) => {
         const followers = results.map(user => ({
             ...user,
             profile_picture: user.profile_picture
-                ? `http://localhost:5000/uploads/${user.profile_picture}`
+                ? `${BASE_URL}/uploads/${user.profile_picture}`
                 : null
         }));
 
@@ -159,7 +160,7 @@ const getFollowing = (req, res) => {
         const following = results.map(user => ({
             ...user,
             profile_picture: user.profile_picture
-                ? `http://localhost:5000/uploads/${user.profile_picture}`
+                ? `${BASE_URL}/uploads/${user.profile_picture}`
                 : null
         }));
 

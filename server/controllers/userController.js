@@ -1,5 +1,5 @@
 const db = require("../config/db");
-
+const BASE_URL = process.env.BASE_URL;
 // ================================
 // Get Logged-in User Profile
 // ================================
@@ -54,7 +54,7 @@ const getMyProfile = (req, res) => {
 
         if (user.profile_picture) {
             user.profile_picture =
-                `http://localhost:5000/uploads/${user.profile_picture}`;
+                `${BASE_URL}/uploads/${user.profile_picture}`;
         }
 
         res.status(200).json(user);
@@ -193,7 +193,7 @@ const getUserProfile = (req, res) => {
 
         if (user.profile_picture) {
             user.profile_picture =
-                `http://localhost:5000/uploads/${user.profile_picture}`;
+                `${BASE_URL}/uploads/${user.profile_picture}`;
         }
 
         res.status(200).json(user);
@@ -231,7 +231,7 @@ const getUserPosts = (req, res) => {
         const posts = results.map(post => ({
             ...post,
             image: post.image
-                ? `http://localhost:5000/uploads/${post.image}`
+                ? `${BASE_URL}/uploads/${post.image}`
                 : null
         }));
 
@@ -276,7 +276,7 @@ const searchUsers = (req, res) => {
         const users = results.map(user => ({
             ...user,
             profile_picture: user.profile_picture
-                ? `http://localhost:5000/uploads/${user.profile_picture}`
+                ? `${BASE_URL}/uploads/${user.profile_picture}`
                 : null
         }));
 
